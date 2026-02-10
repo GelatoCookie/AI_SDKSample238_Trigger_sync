@@ -1,9 +1,9 @@
 
 # Zebra RFID SDK Sample Application
 
-**Release Version: 1.0.1**  
-Branch: `main`  
-Tag: `1.0.1`
+**Release Version: 1.0.0**  
+Branch: `master`  
+Tag: `1.0.0`
 
 
 This sample application demonstrates how to integrate and use the Zebra RFID API3 SDK for Android. It provides a basic implementation for connecting to Zebra RFID readers, performing inventory operations, and scanning barcodes.
@@ -11,14 +11,20 @@ This sample application demonstrates how to integrate and use the Zebra RFID API
 ---
 **Changelog**
 
-- **1.0.1 (2026-02-10):**
+- **1.0.0 (2026-02-10):**
 	- Major code cleanup and refactoring for maintainability and style compliance.
 	- Reduced method complexity and improved naming conventions in all main Java classes.
 	- Removed unused fields, improved exception handling, and modernized code style.
 	- Ready for commit and further development.
 
+New Remote:
+https://github.com/GelatoCookie/AI_SDKSample238
 
-Remote: https://github.com/GelatoCookie/AI_Java_SDKSample
+Old Remote: https://github.com/GelatoCookie/AI_Java_SDKSample
+
+mac:AI_Java_SDKSample-version1-new chucklin$ pwd
+/Users/chucklin/myprojects/MS_Code/Java_AI/AI_Java_SDKSample-version1-new
+
 ---
 **Changelog**
 

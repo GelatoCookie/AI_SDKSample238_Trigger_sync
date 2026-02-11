@@ -5,6 +5,10 @@
 Branch: `master`  
 Tag: `1.0.0`
 
+Remote: https://github.com/GelatoCookie/AI_SDKSample238
+Local Directory: /Users/chucklin/Projects/GitHub/AI_SDKSample238
+
+
 
 This sample application demonstrates how to integrate and use the Zebra RFID API3 SDK for Android. It provides a basic implementation for connecting to Zebra RFID readers, performing inventory operations, and scanning barcodes.
 

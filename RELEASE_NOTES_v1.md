@@ -1,4 +1,13 @@
-# Release Notes - v1 (2026-02-10)
+# Release Notes
+
+## rc1 (2026-02-13)
+
+- Project ready for public release: GitHub templates, CI workflow, and documentation updated.
+- Modernized Pop-up UI: Centered, pill-shaped Snackbars with custom close icon and auto-dismiss.
+- Hourglass loading indicator for auto-disappearing messages.
+- Improved stability and UI alignment.
+- Code cleanup, refactoring, and style compliance.
+- All docs and release notes updated for rc1.
 
 ## Overview
 This is the initial release (v1) of the Zebra RFID SDK Sample Application, providing a working Android app for RFID inventory and barcode scanning using Zebra's SDKs.

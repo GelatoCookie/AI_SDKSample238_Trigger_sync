@@ -1,0 +1,65 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build and Launch App",
+			"type": "shell",
+			"command": "./build_deploy_launch.sh",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build and Launch App",
+			"type": "shell",
+			"command": "./build_deploy_launch.sh",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build and Launch App",
+			"type": "shell",
+			"command": "./build_deploy_launch.sh",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build and Launch App",
+			"type": "shell",
+			"command": "./build_deploy_launch.sh",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build and Launch App",
+			"type": "shell",
+			"command": "./build_deploy_launch.sh",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build and Launch App",
+			"type": "shell",
+			"command": "./build_deploy_launch.sh",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		}
+	]
+}

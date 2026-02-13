@@ -4,19 +4,24 @@
     tools:context="com.zebra.rfid.demo.sdksample.MainActivity">
 
     <item
-        android:visibility="gone"
-        android:id="@+id/antenna_settings"
-        android:title="@string/antenna_settings"
+        android:id="@+id/auto"
+        android:title="RFID and Barcode Trigger Test"
         app:showAsAction="never" />
 
     <item
         android:visibility="gone"
-        android:id="@+id/Singulation_control"
-        android:title="@string/Singulation_control"
+        android:id="@+id/trigger_rfid_rfid"
+        android:title="@string/trigger_rfid_rfid"
+        app:showAsAction="never" />
+
+    <item
+        android:visibility="gone"
+        android:id="@+id/trigger_barcode_barcode"
+        android:title="@string/trigger_barcode_barcode"
         app:showAsAction="never" />
 
    <item
-       android:visibility="gone"
+        android:visibility="gone"
         android:id="@+id/Default"
         android:title="@string/Defaults"
         app:showAsAction="never" />

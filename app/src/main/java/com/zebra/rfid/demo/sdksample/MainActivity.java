@@ -2,24 +2,35 @@ package com.zebra.rfid.demo.sdksample;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.zebra.rfid.api3.TagData;
 
 import java.util.ArrayList;
@@ -60,6 +71,15 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
     private Button btnScan;
     private TextView scanResultText;
     private ProgressBar progressBar;
+    private View rootLayout;
+
+    private boolean bTestTriggerConfig = false;
+
+    /**
+     * Reference to the currently displayed snackbar for programmatic dismissal.
+     */
+    private Snackbar activeSnackbar;
+    private final Handler autoDismissHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +96,15 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         checkPermissionsAndInit();
     }
 
+    public boolean getTestStatus(){
+        return bTestTriggerConfig;
+    }
+
     /**
      * Consolidates UI initialization and setup.
      */
     private void setupUI() {
+        bTestTriggerConfig = false;
         String appName = getString(R.string.app_name);
         try {
             setTitle(appName + " (" + com.zebra.rfid.api3.BuildConfig.VERSION_NAME + ")");
@@ -88,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
             setTitle(appName);
         }
 
+        rootLayout = findViewById(R.id.coordinatorLayout);
         statusTextViewRFID = findViewById(R.id.textViewStatusrfid);
         if (statusTextViewRFID != null) {
             statusTextViewRFID.setOnClickListener(v -> {
@@ -111,7 +137,13 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
 
         if (btnStart != null) btnStart.setEnabled(false);
         if (btnStop != null) btnStop.setEnabled(false);
-        if (btnScan != null) btnScan.setEnabled(false);
+        if (btnScan != null) {
+            btnScan.setEnabled(false);
+            btnScan.setOnClickListener(v -> {
+                Context context = v.getContext();
+                scanCode(context);
+            });
+        }
     }
 
     public void updateReaderStatus(String status, boolean isConnected) {
@@ -165,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (rfidHandler != null) rfidHandler.onCreate(this);
             } else {
-                Toast.makeText(this, getString(R.string.bluetooth_permissions_not_granted), Toast.LENGTH_SHORT).show();
+                showSnackbar(getString(R.string.bluetooth_permissions_not_granted), true);
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -182,18 +214,21 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         int id = item.getItemId();
         if (rfidHandler == null) return super.onOptionsItemSelected(item);
         
-        String result;
-        if (id == R.id.antenna_settings) {
-            result = rfidHandler.Test1();
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+        if (id == R.id.trigger_rfid_rfid) {
+            rfidHandler.setTriggerEnabled(true);
+            showSnackbar("RFID Triggers Enabled", true);
             return true;
-        } else if (id == R.id.Singulation_control) {
-            result = rfidHandler.Test2();
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.trigger_barcode_barcode) {
+            rfidHandler.setTriggerEnabled(false);
+            showSnackbar("Barcode Triggers Enabled", true);
             return true;
         } else if (id == R.id.Default) {
-            result = rfidHandler.Defaults();
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+            rfidHandler.restoreDefaultTriggerConfig();
+            showSnackbar("Default Trigger Settings", true);
+            return true;
+        } else if (id == R.id.auto) {
+            bTestTriggerConfig = true;
+            showSnackbar("Pull Trigger:\r\nRFID Operation\r\nBarcode Trigger Disabled", false);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -264,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         });
     }
 
-    public void scanCode(View view) {
+    public void scanCode(Context view) {
         /**
          * Initiates barcode scanning when the scan button is pressed.
          * @param view The view that triggered this method.
@@ -363,6 +398,13 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
             if (isFinishing() || isDestroyed()) return;
             if (scanResultText != null) {
                 scanResultText.setText(getString(R.string.scan_result_label, val != null ? val : ""));
+
+                if(bTestTriggerConfig) {
+                    sendToast("Restore to RFID");
+                    rfidHandler.subsribeRfidTriggerEvents(true);
+                    rfidHandler.setTriggerEnabled(true);
+                    bTestTriggerConfig = false;
+                }
             }
         });
     }
@@ -370,12 +412,141 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
     @Override
     public void sendToast(String val) {
         /**
-         * Shows a toast message on the UI.
+         * Shows a modern snackbar message on the UI.
          * @param val The message to display.
          */
         runOnUiThread(() -> {
             if (isFinishing() || isDestroyed()) return;
-            Toast.makeText(MainActivity.this, val, Toast.LENGTH_SHORT).show();
+            showSnackbar(val, true);
+        });
+    }
+
+    @Override
+    public void dismissToast() {
+        /**
+         * Dismisses the current snackbar programmatically.
+         */
+        runOnUiThread(() -> {
+            if (activeSnackbar != null && activeSnackbar.isShown()) {
+                activeSnackbar.dismiss();
+            }
+        });
+    }
+
+    /**
+     * Displays a modern, custom Snackbar pop-up UI with improved alignment and styling.
+     * <ul>
+     *   <li>Very large, rounded, shadowed Snackbar</li>
+     *   <li>Custom close (X) icon aligned to the far left for easy dismissal</li>
+     *   <li>Bold, smaller text for message</li>
+     *   <li>Optional hourglass progress indicator for auto-disappear</li>
+     *   <li>Centered content and responsive width</li>
+     * </ul>
+     * @param message The message to display in the Snackbar.
+     * @param bAutoDisappear If true, the Snackbar auto-dismisses after 3 seconds; otherwise, user must tap X to dismiss.
+     */
+    @Override
+    public void showSnackbar(String message, boolean bAutoDisappear) {
+        runOnUiThread(() -> {
+            if (rootLayout == null || message == null) return;
+            
+            if (activeSnackbar != null && activeSnackbar.isShown()) {
+                activeSnackbar.dismiss();
+            }
+            autoDismissHandler.removeCallbacksAndMessages(null);
+
+            activeSnackbar = Snackbar.make(rootLayout, message, Snackbar.LENGTH_INDEFINITE);
+            // Remove default action button, add custom close icon for better alignment
+            activeSnackbar.setAction(null, null);
+            
+            View snackbarView = activeSnackbar.getView();
+            
+            // Modern appearance: very big, rounded, shadow, icon, bold text
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(80f);
+            shape.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            snackbarView.setBackground(shape);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                snackbarView.setElevation(40f);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                snackbarView.setOutlineSpotShadowColor(ContextCompat.getColor(this, R.color.black));
+            }
+
+            @SuppressLint("RestrictedApi") Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbarView;
+            
+            // Adjust original message text view
+            TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
+            textView.setMaxLines(6);
+            textView.setGravity(Gravity.CENTER);
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            textView.setTextSize(16); // Smaller text
+            textView.setTypeface(textView.getTypeface(), android.graphics.Typeface.BOLD);
+            textView.setTextColor(ContextCompat.getColor(this, R.color.white));
+
+                LinearLayout customLayout = new LinearLayout(this);
+                customLayout.setOrientation(LinearLayout.HORIZONTAL);
+                customLayout.setGravity(Gravity.CENTER);
+                customLayout.setPadding(64, 32, 64, 32); // Very big padding
+
+                // Removed info icon for cleaner UI
+
+                // Add custom close (X) icon aligned left
+                ImageView closeIcon = new ImageView(this);
+                closeIcon.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                closeIcon.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
+                LinearLayout.LayoutParams closeParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                closeParams.setMargins(0, 0, 40, 0); // margin to right
+                closeParams.gravity = Gravity.CENTER_VERTICAL;
+                closeIcon.setOnClickListener(v -> dismissToast());
+                customLayout.addView(closeIcon, closeParams);
+
+            if (bAutoDisappear) {
+                // Add Hourglass style ProgressBar only for auto-disappearing toasts
+                ProgressBar hourglass = new ProgressBar(this, null, android.R.attr.progressBarStyleSmall);
+                hourglass.setIndeterminate(true);
+                if (hourglass.getIndeterminateDrawable() != null) {
+                    hourglass.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
+                }
+                LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                progressParams.setMargins(0, 0, 40, 0);
+                customLayout.addView(hourglass, progressParams);
+            }
+            
+            // Re-arrange views for better centered layout
+            ViewGroup textParent = (ViewGroup) textView.getParent();
+            if (textParent != null) {
+                textParent.removeView(textView);
+            }
+            customLayout.addView(textView);
+            layout.addView(customLayout, 0);
+
+            // Very big resize and centering logic
+            ViewGroup.LayoutParams baseParams = snackbarView.getLayoutParams();
+            int targetWidth = (int) (getResources().getDisplayMetrics().widthPixels * 0.95); // 95% width
+            if (baseParams instanceof CoordinatorLayout.LayoutParams) {
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) baseParams;
+                params.gravity = Gravity.CENTER;
+                params.width = targetWidth;
+                snackbarView.setLayoutParams(params);
+            } else if (baseParams instanceof FrameLayout.LayoutParams) {
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) baseParams;
+                params.gravity = Gravity.CENTER;
+                params.width = targetWidth;
+                snackbarView.setLayoutParams(params);
+            } else {
+                snackbarView.setLayoutParams(new ViewGroup.LayoutParams(targetWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
+            snackbarView.setMinimumWidth(targetWidth);
+
+            activeSnackbar.show();
+
+            // Auto-dismiss after 3 seconds
+            if(bAutoDisappear) {
+                autoDismissHandler.postDelayed(this::dismissToast, 3000);
+            }
         });
     }
 }

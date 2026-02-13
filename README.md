@@ -1,53 +1,32 @@
 
 # Zebra RFID SDK Sample Application
 
-**Release Version: 1.0.0**  
+**Release Version: 1.1.0**  
 Branch: `master`  
-Tag: `1.0.0`
-
-Remote: https://github.com/GelatoCookie/AI_SDKSample238
-Local Directory: /Users/chucklin/Projects/GitHub/AI_SDKSample238
-
-
+Tag: `1.1.0`
 
 This sample application demonstrates how to integrate and use the Zebra RFID API3 SDK for Android. It provides a basic implementation for connecting to Zebra RFID readers, performing inventory operations, and scanning barcodes.
 
 ---
 **Changelog**
 
+- **1.1.0 (2026-02-11):**
+    - Modernized Pop-up UI: Replaced traditional Toasts with centered, pill-shaped Snackbars.
+    - Added "Hourglass" loading indicator for auto-disappearing messages.
+    - Implemented manual and programmatic dismissal for all UI notifications.
+    - Improved stability: Added thread-safe trigger configuration and duplicate event prevention.
+    - UI Refinement: Enhanced centering and resizing logic for different screen resolutions.
+
 - **1.0.0 (2026-02-10):**
 	- Major code cleanup and refactoring for maintainability and style compliance.
-	- Reduced method complexity and improved naming conventions in all main Java classes.
-	- Removed unused fields, improved exception handling, and modernized code style.
-	- Ready for commit and further development.
+	- Reduced method complexity and improved naming conventions.
+	- Removed unused fields and improved exception handling.
 
-New Remote:
-https://github.com/GelatoCookie/AI_SDKSample238
-
-Old Remote: https://github.com/GelatoCookie/AI_Java_SDKSample
-
-mac:AI_Java_SDKSample-version1-new chucklin$ pwd
-/Users/chucklin/myprojects/MS_Code/Java_AI/AI_Java_SDKSample-version1-new
-
-git tag --list
-Your current tag is v1. This tag marks your initial release in the repository.
-
-git status
-On branch master
-
----
-**Changelog**
-
-	- Initial public release (1.0.0):
-		- Full source code, build scripts, and documentation
-		- All Zebra .aar libraries included in `app/libs`
-		- Complete RFID and barcode sample logic
-		- Javadoc and code comments updated for all main classes
-		- Git history and release tagging established
 ---
 
 ## Features
 
+- **Modern UI Notifications:** Centered, pill-shaped Snackbars with auto-dismiss and manual close options.
 - **RFID Reader Connection:** Connect and disconnect from Zebra RFID readers via Bluetooth.
 - **RFID Inventory:** Perform real-time inventory to discover RFID tags.
 - **Tag Data Display:** View unique tag IDs along with their peak RSSI values in a list.
@@ -57,7 +36,7 @@ On branch master
 
 ## Project Structure
 
-- `MainActivity.java`: Handles the UI logic and user interactions.
+- `MainActivity.java`: Handles the UI logic, user interactions, and the modern notification system.
 - `RFIDHandler.java`: Manages the lifecycle and operations of the Zebra RFID reader.
 - `ScannerHandler.java`: Handles barcode scanning functionality.
 - `MainUIHandler.java`: Helper for UI-related updates.
@@ -84,6 +63,7 @@ On branch master
 2. **Inventory:** Once connected, tap **Start Inventory** to begin reading tags. Tap **Stop Inventory** to end the session.
 3. **Barcode Scan:** Tap the **Scan** button or use the hardware trigger (if configured) to scan barcodes.
 4. **View Tags:** Discovered tags will appear in the list with their EPC and RSSI.
+5. **Dismiss Messages:** Pop-up messages in the center of the screen can be dismissed manually by tapping the 'X' button or will auto-dismiss after 3 seconds if they show a loading icon.
 
 ## Permissions
 

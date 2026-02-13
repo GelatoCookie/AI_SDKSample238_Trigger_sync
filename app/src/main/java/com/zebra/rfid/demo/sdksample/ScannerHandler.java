@@ -52,7 +52,7 @@ public class ScannerHandler implements IDcsSdkApiDelegate {
     public void dcssdkEventCommunicationSessionEstablished(DCSScannerInfo dcsScannerInfo) {
         Log.d(TAG, "Communication session established: " + dcsScannerInfo.getScannerName());
         if(context != null) {
-            context.sendToast("Scanner established: " + dcsScannerInfo.getScannerName());
+            context.sendToast("Scanner established:\r\n" + dcsScannerInfo.getScannerName());
             context.setScanButtonEnabled(true);
         }
     }

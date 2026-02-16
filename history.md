@@ -1,7 +1,8 @@
 
 # History
 
-## 2026-02-15
+## 2026-02-15 - Version 1.1.1
+- Updated app name to include version number (Trigger v1.1.1).
 - Refactored trigger handling to route events through handleTriggerPress method.
 - Improved tag clearing behavior by adding clearTagData calls before scanning and in response handler.
 - Removed unused testFunction method from MainActivity.

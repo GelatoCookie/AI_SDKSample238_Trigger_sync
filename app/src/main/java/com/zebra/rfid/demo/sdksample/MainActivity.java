@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
                 showSnackbar("RFID Triggers Enabled", true);
                 return true;
             } else{
-                showSnackbar("SKIP Set RFID Triggers!!!\nStop RFID or Reconnect", true);
+                showSnackbar("SKIP Set RFID Trigger Config!!!\r\nStop RFID or Reconnect", true);
                 return false;
             }
         } else if (id == R.id.trigger_barcode_barcode) {
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
                 showSnackbar("Barcode Triggers Enabled", true);
                 return true;
             } else{
-                showSnackbar("SKIP Set Barcode Triggers!!!\nStop RFID or Reconnect", true);
+                showSnackbar("SKIP Set Barcode Trigger Config!!!\r\nStop RFID or Reconnect", true);
                 return false;
             }
 
@@ -248,16 +248,16 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
                 showSnackbar("Default Trigger Settings", true);
                 return true;
             } else{
-                showSnackbar("SKIP Set Default Trigger!!!\nStop RFID or Reconnect", true);
+                showSnackbar("SKIP Set Default Trigger Config!!!\r\nStop RFID or Reconnect", true);
                 return false;
             }
         } else if (id == R.id.auto) {
             if (checkReaderHealthy()) {
                 bTestTriggerConfig = true;
-                showSnackbar("Pull Trigger:\nRFID Operation\nBarcode Trigger Disabled", false);
+                showSnackbar("Pull Trigger:\r\nRFID Operation\r\nBarcode Trigger Disabled", false);
                 return true;
             } else{
-                showSnackbar("SKIP Test Trigger!!!\nStop RFID or Reconnect", true);
+                showSnackbar("SKIP Test Trigger Config!!!\r\nStop RFID or Reconnect", true);
                 return false;
             }
         }
@@ -321,7 +321,6 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
     private void clearTagData() {
         runOnUiThread(() -> {
             if (isFinishing() || isDestroyed()) return;
-            scanResultText.setText("");
             tagSet.clear();
             tagList.clear();
             if (tagAdapter != null) {
@@ -335,8 +334,15 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
          * Initiates barcode scanning when the scan button is pressed.
          * @param view The view that triggered this method.
          */
-        clearTagData();
         if (rfidHandler != null) rfidHandler.scanCode();
+    }
+
+    public void testFunction(View view) {
+        /**
+         * Runs a test function when the test button is pressed.
+         * @param view The view that triggered this method.
+         */
+        if (rfidHandler != null) rfidHandler.testFunction();
     }
 
     public void StopInventory(View view) {
@@ -420,7 +426,6 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
          */
         runOnUiThread(() -> {
             if (isFinishing() || isDestroyed()) return;
-            clearTagData();
             if (scanResultText != null) {
                 scanResultText.setText(getString(R.string.scan_result_label, val != null ? val : ""));
 

@@ -631,10 +631,12 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
                             });
                         } else {
                             Log.d(TAG, "Trigger pulled - pressed, attempting to start inventory....");
-                            performInventory();
+                            //performInventory();
+                            context.handleTriggerPress(true);
                         }
                     } else {
-                        stopInventory();
+                        //stopInventory();
+                        context.handleTriggerPress(false);
                         Log.d(TAG, "Trigger released, attempting to stop inventory....");
                     }
                 }

@@ -291,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
     private void clearTagData() {
         runOnUiThread(() -> {
             if (isFinishing() || isDestroyed()) return;
+            scanResultText.setText("");
             tagSet.clear();
             tagList.clear();
             if (tagAdapter != null) {
@@ -304,15 +305,8 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
          * Initiates barcode scanning when the scan button is pressed.
          * @param view The view that triggered this method.
          */
+        clearTagData();
         if (rfidHandler != null) rfidHandler.scanCode();
-    }
-
-    public void testFunction(View view) {
-        /**
-         * Runs a test function when the test button is pressed.
-         * @param view The view that triggered this method.
-         */
-        if (rfidHandler != null) rfidHandler.testFunction();
     }
 
     public void StopInventory(View view) {
@@ -396,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
          */
         runOnUiThread(() -> {
             if (isFinishing() || isDestroyed()) return;
+            clearTagData();
             if (scanResultText != null) {
                 scanResultText.setText(getString(R.string.scan_result_label, val != null ? val : ""));
 

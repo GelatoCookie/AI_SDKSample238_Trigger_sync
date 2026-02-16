@@ -337,14 +337,6 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         if (rfidHandler != null) rfidHandler.scanCode();
     }
 
-    public void testFunction(View view) {
-        /**
-         * Runs a test function when the test button is pressed.
-         * @param view The view that triggered this method.
-         */
-        if (rfidHandler != null) rfidHandler.testFunction();
-    }
-
     public void StopInventory(View view) {
         /**
          * Stops RFID inventory when the stop button is pressed.

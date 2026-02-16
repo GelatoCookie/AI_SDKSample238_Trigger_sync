@@ -141,12 +141,12 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
             btnScan.setEnabled(false);
             btnScan.setOnClickListener(v -> {
                 if (!checkReaderHealthy()) {
-                        rfidHandler.setTriggerEnabled(true);
-                        showSnackbar("SKIP!!!\nRFID Busy", true);
-                        return false;
-                } 
-                Context context = v.getContext();
-                scanCode(context);
+                    showSnackbar("SKIP!!!\nRFID Busy", true);
+                }
+                else {
+                    Context context = v.getContext();
+                    scanCode(context);
+                }
             });
         }
     }
@@ -229,7 +229,6 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         if (rfidHandler == null) return super.onOptionsItemSelected(item);
 
         if (!checkReaderHealthy()) {
-                rfidHandler.setTriggerEnabled(true);
                 showSnackbar("SKIP!!!\nRFID Busy", true);
                 return false;
         } 

@@ -1,6 +1,12 @@
 
 # History
 
+## 2026-02-16 - Version 1.1.2
+- Updated strings.xml and minor UI text improvements.
+- Merged latest changes from remote and resolved all merge conflicts.
+- Updated documentation and release notes for v1.1.2.
+- Tagged and released as v1.1.2.
+
 ## 2026-02-15 - Version 1.1.1
 - Updated app name to include version number (Trigger v1.1.1).
 - Refactored trigger handling to route events through handleTriggerPress method.

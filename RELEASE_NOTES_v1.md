@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.1.2 (2026-02-16)
+
+- Updated strings.xml and minor UI text improvements.
+- Merged latest changes from remote and resolved all merge conflicts.
+- Updated documentation and release notes for v1.1.2.
+- Tagged and released as v1.1.2.
+
 ## 1.1.1 (2026-02-15)
 
 - Updated app name to display version number (Trigger v1.1.1) for better version identification.
@@ -50,4 +57,4 @@ This is the initial release (v1) of the Zebra RFID SDK Sample Application, provi
 ## Getting Started
 See README.md for build and usage instructions.
 
----
+----

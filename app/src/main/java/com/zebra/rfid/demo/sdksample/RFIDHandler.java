@@ -432,7 +432,7 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
         }
     }
 
-        public boolean setTriggerEnabled(boolean isRfidEnabled) {
+    public boolean setTriggerEnabled(boolean isRfidEnabled) {
         resourceLock.lock();
         try {
             if (reader == null || !reader.isConnected()) return false;
@@ -466,9 +466,6 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
             resourceLock.unlock();
         }
     }
-
-
-
 
     public void setupScannerSdk() {
         if (context == null) return;

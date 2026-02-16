@@ -209,27 +209,57 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         return true;
     }
 
+
+    private boolean checkReaderHealthy(){
+        if(rfidHandler!=null && rfidHandler.isReaderConnected()){
+           if(!rfidHandler.isbRfidBusy())
+               return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (rfidHandler == null) return super.onOptionsItemSelected(item);
         
         if (id == R.id.trigger_rfid_rfid) {
-            rfidHandler.setTriggerEnabled(true);
-            showSnackbar("RFID Triggers Enabled", true);
-            return true;
+            if (checkReaderHealthy()) {
+                rfidHandler.setTriggerEnabled(true);
+                showSnackbar("RFID Triggers Enabled", true);
+                return true;
+            } else{
+                showSnackbar("SKIP Set RFID Triggers!!!\nStop RFID or Reconnect", true);
+                return false;
+            }
         } else if (id == R.id.trigger_barcode_barcode) {
-            rfidHandler.setTriggerEnabled(false);
-            showSnackbar("Barcode Triggers Enabled", true);
-            return true;
+            if (checkReaderHealthy()) {
+                rfidHandler.setTriggerEnabled(false);
+                showSnackbar("Barcode Triggers Enabled", true);
+                return true;
+            } else{
+                showSnackbar("SKIP Set Barcode Triggers!!!\nStop RFID or Reconnect", true);
+                return false;
+            }
+
         } else if (id == R.id.Default) {
-            rfidHandler.restoreDefaultTriggerConfig();
-            showSnackbar("Default Trigger Settings", true);
-            return true;
+            if (checkReaderHealthy()) {
+                rfidHandler.restoreDefaultTriggerConfig();
+                showSnackbar("Default Trigger Settings", true);
+                return true;
+            } else{
+                showSnackbar("SKIP Set Default Trigger!!!\nStop RFID or Reconnect", true);
+                return false;
+            }
         } else if (id == R.id.auto) {
-            bTestTriggerConfig = true;
-            showSnackbar("Pull Trigger:\r\nRFID Operation\r\nBarcode Trigger Disabled", false);
-            return true;
+            if (checkReaderHealthy()) {
+                bTestTriggerConfig = true;
+                showSnackbar("Pull Trigger:\nRFID Operation\nBarcode Trigger Disabled", false);
+                return true;
+            } else{
+                showSnackbar("SKIP Test Trigger!!!\nStop RFID or Reconnect", true);
+                return false;
+            }
         }
         return super.onOptionsItemSelected(item);
     }

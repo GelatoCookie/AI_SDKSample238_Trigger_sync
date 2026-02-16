@@ -53,7 +53,6 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
     private int scannerID;
     private static final int MAX_POWER = 270;
     private static final String READER_NAME = "RFD4031-G10B700-WR";
-
     private final Handler uiHandler = new Handler(Looper.getMainLooper());
     private int connectionTimer = 0;
     private volatile boolean bRfidBusy = false;
@@ -66,9 +65,8 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
             }
         }
     };
-    
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
+    
     /**
      * Lock to synchronize access to trigger configuration and other shared resources.
      */
@@ -126,7 +124,7 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
      * Checks if the RFID reader is currently connected.
      * @return True if connected, false otherwise.
      */
-    private boolean isReaderConnected() {
+    public boolean isReaderConnected() {
         return reader != null && reader.isConnected();
     }
 
@@ -240,13 +238,6 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
             readers.Dispose();
             readers = null;
         }
-    }
-
-    /**
-     * Placeholder for a test function. Throws UnsupportedOperationException if called.
-     */
-    public void testFunction() {
-        //throw new UnsupportedOperationException("testFunction() is not implemented yet.");
     }
 
     private void connectReader() {
@@ -588,6 +579,10 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
         if (sdkHandler != null) {
             sdkHandler.dcssdkExecuteCommandOpCodeInXMLForScanner(opCode, inXML, new StringBuilder(), scannerID);
         }
+    }
+
+    public boolean isbRfidBusy() {
+        return bRfidBusy;
     }
 
     /**

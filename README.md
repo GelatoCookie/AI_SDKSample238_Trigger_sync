@@ -11,6 +11,9 @@ This sample application demonstrates how to integrate and use the Zebra RFID API
 
 **Changelog**
 
+- **1.1.3 (2026-02-16):**
+    - Placeholder for changes in v1.1.3. Update with actual changes as needed.
+
 - **1.1.2 (2026-02-16):**
     - Updated strings.xml and minor UI text improvements.
     - Merged latest changes from remote and resolved all merge conflicts.
@@ -35,8 +38,6 @@ This sample application demonstrates how to integrate and use the Zebra RFID API
     - Major code cleanup and refactoring for maintainability and style compliance.
     - Reduced method complexity and improved naming conventions.
     - Removed unused fields and improved exception handling.
-
-----
 
 ## Features
 

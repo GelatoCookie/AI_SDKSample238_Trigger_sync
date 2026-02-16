@@ -1,14 +1,21 @@
 
 # Zebra RFID SDK Sample Application
 
-**Release Version: 1.1.0**  
+**Release Version: 1.1.1**  
 Branch: `master`  
-Tag: `1.1.0`
+Tag: `1.1.1`
 
 This sample application demonstrates how to integrate and use the Zebra RFID API3 SDK for Android. It provides a basic implementation for connecting to Zebra RFID readers, performing inventory operations, and scanning barcodes.
 
 ---
 **Changelog**
+
+- **1.1.1 (2026-02-15):**
+    - Updated app name to display version number (Trigger v1.1.1).
+    - Refactored trigger handling to route events through handleTriggerPress method.
+    - Improved tag clearing behavior with better data reset before scanning operations.
+    - Removed unused testFunction method for code cleanup.
+    - Added VS Code build tasks for streamlined development workflow.
 
 - **1.1.0 (2026-02-11):**
     - Modernized Pop-up UI: Replaced traditional Toasts with centered, pill-shaped Snackbars.

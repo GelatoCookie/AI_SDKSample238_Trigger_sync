@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.1.1 (2026-02-15)
+
+- Updated app name to display version number (Trigger v1.1.1) for better version identification.
+- Refactored trigger handling architecture: trigger events now route through handleTriggerPress method for better control.
+- Improved tag clearing behavior: added clearTagData calls before scanning and in response handler to ensure clean state.
+- Code cleanup: removed unused testFunction method from MainActivity.
+- Development improvements: added VS Code build tasks configuration for streamlined workflow.
+- Successfully tested on device 59040DLCH003LK.
+
 ## rc1 (2026-02-13)
 
 - Project ready for public release: GitHub templates, CI workflow, and documentation updated.

@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         super.onDestroy();
     }
 
-    private void toggleInventoryButtons(boolean isRunning) {
+    public void toggleInventoryButtons(boolean isRunning) {
         runOnUiThread(() -> {
             if (isFinishing() || isDestroyed()) return;
             if (btnStart != null) btnStart.setEnabled(!isRunning);

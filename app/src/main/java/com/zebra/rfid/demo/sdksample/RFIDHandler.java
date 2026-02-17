@@ -556,12 +556,17 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
     synchronized void performInventory() {
         if(bRfidBusy) {
             Log.d(TAG, "RFID is busy, inventory request ignored.\r\n Abort!!!!");
-            stopInventory();
             return;
         }
+        
+        // Optimistic locking: Set busy immediately to prevent race conditions (e.g. trigger bounce)
+        bRfidBusy = true;
         try {
             if (reader != null && reader.isConnected()) reader.Actions.Inventory.perform();
         } catch (InvalidUsageException | OperationFailureException e) {
+            // Revert busy state if the operation failed to start
+            bRfidBusy = false;
+            if (context != null) context.toggleInventoryButtons(false);
             Log.e(TAG, "Error performing inventory", e);
         }
     }
@@ -629,13 +634,19 @@ class RFIDHandler implements Readers.RFIDReaderEventHandler {
                 });
             } else if (eventType == STATUS_EVENT_TYPE.INVENTORY_START_EVENT) {
                 bRfidBusy = true;
-                if (context != null) context.dismissToast();
+                if (context != null) {
+                    context.dismissToast();
+                    context.toggleInventoryButtons(true);
+                }
             } else if (eventType == STATUS_EVENT_TYPE.INVENTORY_STOP_EVENT) {
                 bRfidBusy = false;
-                if(context != null && context.getTestStatus()) {
+                if(context != null) {
+                    context.toggleInventoryButtons(false);
+                    if (context.getTestStatus()) {
                     context.dismissToast();
                     context.showSnackbar("Pull Trigger: \r\nScan Barcode", false);
                     testBarcode();
+                    }
                 }
             } else if (eventType == STATUS_EVENT_TYPE.OPERATION_END_SUMMARY_EVENT) {
                 Log.d(TAG, "Operation End Summary Event");

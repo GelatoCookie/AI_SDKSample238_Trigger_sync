@@ -4,12 +4,15 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -254,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         } else if (id == R.id.auto) {
             if (checkReaderHealthy()) {
                 bTestTriggerConfig = true;
-                showSnackbar("Pull Trigger:\r\nRFID Operation\r\nBarcode Trigger Disabled", false);
+                showSnackbar("Pull Trigger:\nRFID Operation\n\nBarcode Trigger Disabled", false);
                 return true;
             } 
         }
@@ -453,16 +456,9 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
     }
 
     /**
-     * Displays a modern, custom Snackbar pop-up UI with improved alignment and styling.
-     * <ul>
-     *   <li>Very large, rounded, shadowed Snackbar</li>
-     *   <li>Custom close (X) icon aligned to the far left for easy dismissal</li>
-     *   <li>Bold, smaller text for message</li>
-     *   <li>Optional hourglass progress indicator for auto-disappear</li>
-     *   <li>Centered content and responsive width</li>
-     * </ul>
-     * @param message The message to display in the Snackbar.
-     * @param bAutoDisappear If true, the Snackbar auto-dismisses after 3 seconds; otherwise, user must tap X to dismiss.
+     * Displays a modern, large, centered Snackbar window that fits all text with an X icon for dismissal.
+     * @param message The message to display.
+     * @param bAutoDisappear If true, the Snackbar auto-dismisses after 3 seconds.
      */
     @Override
     public void showSnackbar(String message, boolean bAutoDisappear) {
@@ -474,98 +470,70 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
             }
             autoDismissHandler.removeCallbacksAndMessages(null);
 
-            activeSnackbar = Snackbar.make(rootLayout, message, Snackbar.LENGTH_INDEFINITE);
-            // Remove default action button, add custom close icon for better alignment
-            activeSnackbar.setAction(null, null);
+            activeSnackbar = Snackbar.make(rootLayout, message, bAutoDisappear ? Snackbar.LENGTH_LONG : Snackbar.LENGTH_INDEFINITE);
             
             View snackbarView = activeSnackbar.getView();
             
-            // Modern appearance: very big, rounded, shadow, icon, bold text
+            // Glassmorphism effect with larger rounded corners
             GradientDrawable shape = new GradientDrawable();
-            shape.setCornerRadius(80f);
-            shape.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            shape.setCornerRadius(40f);
+            shape.setColor(Color.parseColor("#EE1A1A1A")); // Slightly more opaque
+            shape.setStroke(3, Color.parseColor("#44FFFFFF")); 
             snackbarView.setBackground(shape);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                snackbarView.setElevation(40f);
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                snackbarView.setOutlineSpotShadowColor(ContextCompat.getColor(this, R.color.black));
-            }
 
-            @SuppressLint("RestrictedApi") Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbarView;
-            
-            // Adjust original message text view
-            TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
-            textView.setMaxLines(6);
-            textView.setGravity(Gravity.CENTER);
-            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            textView.setTextSize(16); // Smaller text
-            textView.setTypeface(textView.getTypeface(), android.graphics.Typeface.BOLD);
-            textView.setTextColor(ContextCompat.getColor(this, R.color.white));
+            // Positioning logic for "Large Window" effect
+            DisplayMetrics dm = getResources().getDisplayMetrics();
+            int maxWidth = (int) (dm.widthPixels * 0.85); // 85% of screen width
 
-                LinearLayout customLayout = new LinearLayout(this);
-                customLayout.setOrientation(LinearLayout.HORIZONTAL);
-                customLayout.setGravity(Gravity.CENTER);
-                customLayout.setPadding(64, 32, 64, 32); // Very big padding
-
-                // Removed info icon for cleaner UI
-
-                // Add custom close (X) icon aligned left
-                ImageView closeIcon = new ImageView(this);
-                closeIcon.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-                closeIcon.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
-                LinearLayout.LayoutParams closeParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                closeParams.setMargins(0, 0, 40, 0); // margin to right
-                closeParams.gravity = Gravity.CENTER_VERTICAL;
-                closeIcon.setOnClickListener(v -> dismissToast());
-                customLayout.addView(closeIcon, closeParams);
-
-            if (bAutoDisappear) {
-                // Add Hourglass style ProgressBar only for auto-disappearing toasts
-                ProgressBar hourglass = new ProgressBar(this, null, android.R.attr.progressBarStyleSmall);
-                hourglass.setIndeterminate(true);
-                if (hourglass.getIndeterminateDrawable() != null) {
-                    hourglass.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
-                }
-                LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                progressParams.setMargins(0, 0, 40, 0);
-                customLayout.addView(hourglass, progressParams);
-            }
-            
-            // Re-arrange views for better centered layout
-            ViewGroup textParent = (ViewGroup) textView.getParent();
-            if (textParent != null) {
-                textParent.removeView(textView);
-            }
-            customLayout.addView(textView);
-            layout.addView(customLayout, 0);
-
-            // Very big resize and centering logic
             ViewGroup.LayoutParams baseParams = snackbarView.getLayoutParams();
-            int targetWidth = (int) (getResources().getDisplayMetrics().widthPixels * 0.95); // 95% width
             if (baseParams instanceof CoordinatorLayout.LayoutParams) {
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) baseParams;
                 params.gravity = Gravity.CENTER;
-                params.width = targetWidth;
+                params.width = maxWidth;
                 snackbarView.setLayoutParams(params);
             } else if (baseParams instanceof FrameLayout.LayoutParams) {
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) baseParams;
                 params.gravity = Gravity.CENTER;
-                params.width = targetWidth;
+                params.width = maxWidth;
                 snackbarView.setLayoutParams(params);
-            } else {
-                snackbarView.setLayoutParams(new ViewGroup.LayoutParams(targetWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
-            snackbarView.setMinimumWidth(targetWidth);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                snackbarView.setElevation(30f);
+            }
+
+            @SuppressLint("RestrictedApi") Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbarView;
+            
+            // Adjust text view to fit all text and look "Large"
+            TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
+            textView.setMaxLines(20); // Allow many lines
+            textView.setTextSize(20); // Larger font
+            textView.setPadding(32, 48, 32, 48); // More breathing room
+            textView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            textView.setTextColor(Color.WHITE);
+            textView.setGravity(Gravity.CENTER);
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+            // Hide default action button
+            Button actionButton = layout.findViewById(com.google.android.material.R.id.snackbar_action);
+            if (actionButton != null) {
+                actionButton.setVisibility(View.GONE);
+            }
+
+            // Add custom X icon for dismissal
+            ImageView closeIcon = new ImageView(this);
+            closeIcon.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+            closeIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            closeIcon.setPadding(20, 20, 20, 20);
+            closeIcon.setOnClickListener(v -> dismissToast());
+
+            FrameLayout.LayoutParams closeParams = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            closeParams.gravity = Gravity.TOP | Gravity.END;
+            closeParams.setMargins(0, 10, 10, 0);
+            layout.addView(closeIcon, closeParams);
 
             activeSnackbar.show();
-
-            // Auto-dismiss after 3 seconds
-            if(bAutoDisappear) {
-                autoDismissHandler.postDelayed(this::dismissToast, 3000);
-            }
         });
     }
 }
